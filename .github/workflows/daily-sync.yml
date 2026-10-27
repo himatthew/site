@@ -1,0 +1,41 @@
+name: Daily Feed Sync
+
+on:
+  schedule:
+    # 每天北京时间 00:00 (UTC 16:00) 自动执行同步
+    - cron: '0 16 * * *'
+  workflow_dispatch: # 支持在 GitHub Actions 页面手动点击一键触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 检出仓库代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js 环境
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 安装依赖
+        run: npm ci || npm install
+
+      - name: 执行同步脚本
+        run: npm run sync
+
+      - name: 检查并提交新动态
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add src/data/posts.json public/data/posts.json
+          if ! git diff --cached --exit-code; then
+            echo "发现新动态，正在提交更改..."
+            git commit -m "chore(feed): auto sync daily posts [$(date +'%Y-%m-%d')]"
+            git push
+          else
+            echo "今日暂无新动态更新。"
+          fi

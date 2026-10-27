@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="format-detection" content="telephone=yes, email=yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="renderer" content="webkit" />
+  <meta name="HandheldFriendly" content="true" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="screen-orientation" content="portrait" />
+  <meta name="x5-orientation" content="portrait" />
+  <meta name="full-screen" content="yes" />
+  <meta name="x5-fullscreen" content="true" />
+  <meta name="browsermode" content="application" />
+  <meta name="x5-page-mode" content="app" />
+  <link rel="icon" href="/favicon.png" />
+  <title>喜迁阳邑</title>
+</head>
+<body class="v2022">
+  <script>
+    (function (doc, win) {
+      var docEl = doc.documentElement, resizeEvt = "resize";
+      var recalc = function () {
+        setTimeout(function () {
+          var clientWidth = docEl.clientWidth;
+          var clientHeight = docEl.clientHeight;
+          if (!clientWidth) return;
+          if (clientHeight < clientWidth) {
+            docEl.style.fontSize = 100 * (Math.min(clientWidth, 430) / 430) * (clientHeight / 932) + "px";
+          } else {
+            docEl.style.fontSize = 100 * (Math.min(clientWidth, 430) / 430) + "px";
+          }
+        }, 50);
+      };
+      recalc();
+      if (!doc.addEventListener) return;
+      win.addEventListener(resizeEvt, recalc, false);
+      doc.addEventListener("DOMContentLoaded", recalc, false);
+    })(document, window);
+  </script>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+</html>
