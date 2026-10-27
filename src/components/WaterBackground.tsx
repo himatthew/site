@@ -21,35 +21,36 @@ export const WaterBackground: React.FC<WaterBackgroundProps> = ({ onLoaded }) =>
   const frames = useRef(getWaterFrames()).current;
   const timerRef = useRef<number | null>(null);
 
+  // Preload all frames actively using new Image()
   useEffect(() => {
     let loadedCount = 0;
-    const preloadTarget = 10; // once first 10 frames are loaded, can start smoothly
 
     frames.forEach((src) => {
       const img = new Image();
       img.src = src;
       img.onload = () => {
         loadedCount++;
-        if (loadedCount >= preloadTarget && onLoaded) {
+        // Once the first 3 frames are in memory, notify ready
+        if (loadedCount >= 3 && onLoaded) {
           onLoaded();
         }
       };
       img.onerror = () => {
         loadedCount++;
-        if (loadedCount >= preloadTarget && onLoaded) {
+        if (loadedCount >= 3 && onLoaded) {
           onLoaded();
         }
       };
     });
 
-    // Fallback if cached or fast
-    const timeout = setTimeout(() => {
+    const fallbackTimer = setTimeout(() => {
       onLoaded?.();
-    }, 1200);
+    }, 600);
 
-    return () => clearTimeout(timeout);
+    return () => clearTimeout(fallbackTimer);
   }, [frames, onLoaded]);
 
+  // Animation frame ticker at 140ms
   useEffect(() => {
     timerRef.current = window.setInterval(() => {
       setCurrentFrame((prev) => (prev + 1) % TOTAL_FRAMES);
@@ -64,11 +65,23 @@ export const WaterBackground: React.FC<WaterBackgroundProps> = ({ onLoaded }) =>
 
   return (
     <div className="bgList" aria-hidden="true">
+      {/* Base stationary frame: ensures zero black flash on initial load */}
+      <img
+        src={frames[0]}
+        alt=""
+        className="bgImg baseFrame"
+        loading="eager"
+        decoding="sync"
+      />
+      {/* 57 Sequence Frames: rendered as native <img> elements matching official site */}
       {frames.map((src, index) => (
-        <div
+        <img
           key={src}
+          src={src}
+          alt=""
           className={`bgImg ${index === currentFrame ? 'active' : ''}`}
-          style={{ backgroundImage: `url(${src})` }}
+          loading="eager"
+          decoding="async"
         />
       ))}
     </div>
