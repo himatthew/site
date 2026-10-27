@@ -43,14 +43,20 @@ export const App: React.FC = () => {
       });
   }, []);
 
-  // Check loading completion
+  const handleWaterLoaded = useCallback(() => {
+    setWaterLoaded(true);
+    setLoading(false);
+  }, []);
+
+  // Check loading completion & safety fallback
   useEffect(() => {
     if (waterLoaded) {
-      const timer = setTimeout(() => {
-        setLoading(false);
-      }, 200);
-      return () => clearTimeout(timer);
+      setLoading(false);
     }
+    const safetyTimer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(safetyTimer);
   }, [waterLoaded]);
 
   // Keyboard shortcut (Ctrl+Shift+U or Cmd+Shift+U) to toggle admin panel
@@ -99,7 +105,7 @@ export const App: React.FC = () => {
   return (
     <div className="page">
       {/* Water Ripple Frame Animation Background */}
-      <WaterBackground onLoaded={() => setWaterLoaded(true)} />
+      <WaterBackground onLoaded={handleWaterLoaded} />
 
       {/* Header Banner */}
       <div
