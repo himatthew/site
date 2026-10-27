@@ -149,6 +149,7 @@ export const FeedItem: React.FC<FeedItemProps> = ({
                 src={post.content[0].cover_image || post.content[0].content}
                 alt=""
                 loading="lazy"
+                referrerPolicy="no-referrer"
               />
               <div className="play___oHeej" />
             </div>
@@ -249,6 +250,7 @@ export const FeedItem: React.FC<FeedItemProps> = ({
                             src={item.cover_image || item.content}
                             alt=""
                             loading="lazy"
+                            referrerPolicy="no-referrer"
                           />
                           <div className="play___20_cq" />
                         </div>
@@ -256,7 +258,7 @@ export const FeedItem: React.FC<FeedItemProps> = ({
                     ) : (
                       <PhotoView key={`${idx}-${item.id}`} src={item.content}>
                         <div className="imgBox____j4u6 shot">
-                          <img src={item.content} alt="" loading="lazy" />
+                          <img src={item.content} alt="" loading="lazy" referrerPolicy="no-referrer" />
                         </div>
                       </PhotoView>
                     )
